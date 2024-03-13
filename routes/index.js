@@ -3,7 +3,7 @@ const express = require('express');
 // Create new instance of 'Express' router, assign it to 'router' variable
 const router = express.Router();
 // Import 'AppController'
-const AppController = require('../controllers/AppController');
+const AppController = require('../controllers/appController');
 
 // GET /status
 // When a 'get' request is made to the '/status' route

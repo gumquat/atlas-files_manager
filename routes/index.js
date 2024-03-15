@@ -15,5 +15,10 @@ router.get('/status', AppController.getStatus);
 // the 'Appcontroller.getStats' func will run to handle the request
 router.get('/stats', AppController.getStats);
 
+// POST /users
+// When a 'post' request is made to the '/users' route
+// the 'UsersController.postNew' func will run to handle the request
+router.post('/users', UsersController.postNew);
+
 // Export the router instance so it can be used elsewhere
 module.exports = router;

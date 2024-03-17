@@ -2,8 +2,13 @@
 const express = require('express');
 // Create new instance of 'Express' router, assign it to 'router' variable
 const router = express.Router();
+
 // Import 'AppController'
 const AppController = require('../controllers/appController');
+// Import 'UsersController'
+const UsersController = require('../controllers/UsersController');
+// Import 'AuthController'
+const AuthController = require('../controllers/AuthController');
 
 // GET /status
 // When a 'get' request is made to the '/status' route
@@ -19,6 +24,21 @@ router.get('/stats', AppController.getStats);
 // When a 'post' request is made to the '/users' route
 // the 'UsersController.postNew' func will run to handle the request
 router.post('/users', UsersController.postNew);
+
+// GET /connect
+// When a 'get' request is made to the '/connect' route
+// the 'AuthController.getConnect' func will run to handle the request
+router.get('/connect', AuthController.getConnect);
+
+// GET /disconnect
+// When a 'get' request is made to the '/disconnect' route
+// the 'AuthController.getDisconnect' func will run to handle the request
+router.get('/disconnect', AuthController.getDisconnect);
+
+// GET /users/me
+// When a 'get' request is made to the '/users/me' route
+// the 'UserController.getMe' func will run to handle the request
+router.get('/users/me', UsersController.getMe);
 
 // Export the router instance so it can be used elsewhere
 module.exports = router;

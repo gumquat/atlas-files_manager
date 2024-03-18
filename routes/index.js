@@ -12,6 +12,8 @@ const AuthController = require('../controllers/AuthController');
 // Import 'FilesController'
 const FilesController = require('../controllers/FilesController');
 
+// API endpoints BELOW
+
 // GET /status
 // When a 'get' request is made to the '/status' route
 // the 'Appcontroller.getStatus' func will run to handle the request

@@ -1,60 +1,64 @@
-const MongoUtil = require('../utils/MongoUtil');
-const RedisUtil = require('../utils/RedisUtil');
-const sha1 = require('sha1');
+const sha1 = require('../node_modules/sha1');
+const redis = require('redis');
+const dbclient = require('../utils/db')
 
-// Post /users endpoint
-const postNew = async (req, res) => {
-  const { email, password } = req.body;
+class UsersController {
+  // Post /users endpoint
+  // static async postNew = async (req, res) => {
+  static postNew = async (req, res) => {
+    const { email, password } = req.body;
 
-  // Validate Email and Password
-  if (!email) {
-    return res.status(400).json({ error: 'Missing email' });
-  }
-  if (!password) {
-    return res.status(400).json({ error: 'Missing password' });
-  }
+    // Validate Email and Password
+    if (!email) {
+      return res.status(400).json({ error: 'Missing email' });
+    }
+    if (!password) {
+      return res.status(400).json({ error: 'Missing password' });
+    }
 
-  // Check if user already exists
-  const user = await MongoUtil.findUser(email);
-  if (user) {
-    return res.status(400).json({ error: 'Already exist' });
-  }
-  
-  // Create the new user with a hashed password
-  const newUser = {
-    email,
-    password: sha1(password), // Hash the password
+    // Check if user already exists
+    const user = await dbClient.getUserByEmail(email);
+    if (user) {
+      return res.status(400).json({ error: 'Already exist' });
+    }
+    
+    // Create the new user with a hashed password
+    const newUser = {
+      email,
+      password: sha1(password), // Hash the password
+    };
+
+    // Save the new user to the database
+    const result = await dbClient.createUser(newUser);
+
+    // Return the new user's email and id
+    return res.status(201).json({ email: result.email, id: result._id });
   };
 
-  // Save the new user to the database
-  const result = await MongoUtil.createUser(newUser);
+  // GET /users/me endpoint
+  static getMe = async (req, res) => {
+    // Get the token from the request headers
+    const token = req.headers['x-token'];
+    const userId = await redisClient.get(`auth_${token}`);
 
-  // Return the new user's email and id
-  res.status(201).json({ email: result.email, id: result._id });
-};
+    // Check if the user is authorized
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    // Get the user from the database
+    const user = await dbClient.getUserById(userId);
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
 
-// GET /users/me endpoint
-const getMe = async (req, res) => {
-  // Get the token from the request headers
-  const token = req.headers['x-token'];
-  const userId = await RedisUtil.redisClient.get(`auth_${token}`);
+    // Return the user's email and id
+    res.status(200).json({ email: user.email, id: user._id });
+  };
+}
 
-  // Check if the user is authorized
-  if (!userId) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  // Get the user from the database
-  const user = await MongoUtil.findUserById(userId);
-  if (!user) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  // Return the user's email and id
-  res.status(200).json({ email: user.email, id: user._id });
-};
-
-module.exports = {
-  postNew,
-  getMe
-};
+// its a class now so we can just export that
+// module.exports = {
+//   postNew,
+//   getMe
+// };
+module.exports = UsersController;

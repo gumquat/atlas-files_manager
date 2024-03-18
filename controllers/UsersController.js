@@ -3,8 +3,8 @@
 
 // Import the dbClient and redisClient
 const redisClient = require('redis');
-
 const dbClient = require('../utils/db');
+
 const sha1 = require('../node_modules/sha1');
 
 class UsersController {

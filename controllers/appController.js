@@ -1,4 +1,3 @@
-//imports
 const RedisUtil = require('../utils/RedisUtil');
 const MongoUtil = require('../utils/MongoUtil');
 

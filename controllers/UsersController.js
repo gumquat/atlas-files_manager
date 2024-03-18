@@ -1,6 +1,6 @@
 const sha1 = require('../node_modules/sha1');
-const dbclient = require('../utils/db')
-const redis = require('redis');
+const dbClient = require('../utils/db')
+const redisClient = require('redis');
 
 class UsersController {
   // Post /users endpoint

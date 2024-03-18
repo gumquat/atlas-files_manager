@@ -1,69 +1,67 @@
+// Task 3 - Create a new user
+// Controller file
+
+// Import the dbClient and redisClient
+const redis = require('redis');
+
+const dbClient = require('../utils/db');
 const sha1 = require('../node_modules/sha1');
-const dbClient = require('../utils/db')
-const redisClient = require('redis');
 
 class UsersController {
-  // Post /users endpoint
-  // static async postNew = async (req, res) => {
   static async postNew(req, res) {
     const { email, password } = req.body;
 
-    // Validate Email and Password
+    // Check if email is missing
     if (!email) {
       return res.status(400).json({ error: 'Missing email' });
     }
+
+    // Check if password is missing
     if (!password) {
       return res.status(400).json({ error: 'Missing password' });
     }
 
-    // Check if user already exists
-    try{
-      const user = await dbClient.getUserByEmail(email);
-      if (user) {
+    try {
+      // Check if email already exists in DB
+      const userExists = await dbClient.getUserByEmail(email);
+      if (userExists) {
         return res.status(400).json({ error: 'Already exist' });
       }
-    
-    // Create the new user with a hashed password
-    const newUser = {
-      email,
-      password: sha1(password), // Hashes the password
-    };
 
-    // Save the new user to the database 'users'
-    const result = await dbClient.createUser(newUser);
+      // Hash the password using SHA1
+      const hashedPassword = sha1(password);
 
-    // Return the new user's email and id
-    return res.status(201).json({ email: savedUser.email, id: savedUser._id });
-  } catch (error) {
-    console.error('Error creating user:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+      // Create the new user
+      const newUser = {
+        email,
+        password: hashedPassword,
+      };
+
+      // Save the new user in the collection users
+      const savedUser = await dbClient.createUser(newUser);
+
+      // Return the new user with only the email and the id
+      return res.status(201).json({ email: savedUser.email, id: savedUser._id });
+    } catch (error) {
+      console.error('Error creating user:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
-  // GET /users/me endpoint
   static async getMe(req, res) {
-    // Get the token from the request headers
     const token = req.headers['x-token'];
     const userId = await redisClient.get(`auth_${token}`);
-
-    // Check if the user is authorized
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    // Get the user from the database
+
     const user = await dbClient.getUserById(userId);
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Return the user's email and id
     return res.status(200).json({ email: user.email, id: user._id });
-  };
+  }
 }
 
-// its a class now so we can just export that
-// module.exports = {
-//   postNew,
-//   getMe
-// };
 module.exports = UsersController;

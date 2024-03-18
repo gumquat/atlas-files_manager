@@ -1,53 +1,33 @@
-// Import 'express' module to create router instance
 const express = require('express');
-// Create new instance of 'Express' router, assign it to 'router' variable
+
 const router = express.Router();
 
-// Import Controllers from controller directory
+// Require controllers
 const AppController = require('../controllers/AppController');
 const UsersController = require('../controllers/UsersController');
 const AuthController = require('../controllers/AuthController');
 const FilesController = require('../controllers/FilesController');
 
-// API endpoints BELOW
+// API Endpoints
 
-// GET /status
-// When a 'get' request is made to the '/status' route
-// the 'Appcontroller.getStatus' func will run to handle the request
+// This checks the status of redis and the db
 router.get('/status', AppController.getStatus);
-
-// GET /stats
-// When a 'get' request is made to the '/stats' route
-// the 'Appcontroller.getStats' func will run to handle the request
+// This tells you the stats of how many users and files there are
 router.get('/stats', AppController.getStats);
-
-// POST /users
-// When a 'post' request is made to the '/users' route
-// the 'UsersController.postNew' func will run to handle the request
+// This creates a new user
 router.post('/users', UsersController.postNew);
-
-// GET /connect
-// When a 'get' request is made to the '/connect' route
-// the 'AuthController.getConnect' func will run to handle the request
+// This should sign-in the user by generating a new authentication token
 router.get('/connect', AuthController.getConnect);
-
-// GET /disconnect
-// When a 'get' request is made to the '/disconnect' route
-// the 'AuthController.getDisconnect' func will run to handle the request
+// This should sign-out the user based on the token
 router.get('/disconnect', AuthController.getDisconnect);
-
-// GET /users/me
-// When a 'get' request is made to the '/users/me' route
-// the 'UserController.getMe' func will run to handle the request
+// This should retrieve the user based on the token used
+// weirdly I think they had a typo and wanted UserController instead of UsersController
 router.get('/users/me', UsersController.getMe);
-
-// DOUBLE CHECK THIS
-router.get('/users/me', UsersController.getMe);
-
-// Post /files
-// When a 'post' request is made to the '/files' route
-// the 'FilesController.postUpload' func will run to handle the request
+// This retrieves the file based on the data provided in the request body
 router.post('/files', FilesController.postUpload);
+// This retrieves a specific file by its ID
+router.get('/files/:id', FilesController.getShow);
+// This retrieves all files
+router.get('/files', FilesController.getIndex);
 
-// Export the router instance so it can be used elsewhere
 module.exports = router;

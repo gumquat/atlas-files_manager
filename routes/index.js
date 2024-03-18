@@ -3,13 +3,10 @@ const express = require('express');
 // Create new instance of 'Express' router, assign it to 'router' variable
 const router = express.Router();
 
-// Import 'AppController'
+// Import Controllers from controller directory
 const AppController = require('../controllers/AppController');
-// Import 'UsersController'
 const UsersController = require('../controllers/UsersController');
-// Import 'AuthController'
 const AuthController = require('../controllers/AuthController');
-// Import 'FilesController'
 const FilesController = require('../controllers/FilesController');
 
 // API endpoints BELOW
@@ -42,6 +39,9 @@ router.get('/disconnect', AuthController.getDisconnect);
 // GET /users/me
 // When a 'get' request is made to the '/users/me' route
 // the 'UserController.getMe' func will run to handle the request
+router.get('/users/me', UsersController.getMe);
+
+// DOUBLE CHECK THIS
 router.get('/users/me', UsersController.getMe);
 
 // Post /files

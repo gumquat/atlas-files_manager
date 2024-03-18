@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import 'AppController'
-const AppController = require('../controllers/appController');
+const AppController = require('../controllers/AppController');
 // Import 'UsersController'
 const UsersController = require('../controllers/UsersController');
 // Import 'AuthController'

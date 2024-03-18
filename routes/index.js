@@ -9,6 +9,8 @@ const AppController = require('../controllers/appController');
 const UsersController = require('../controllers/UsersController');
 // Import 'AuthController'
 const AuthController = require('../controllers/AuthController');
+// Import 'FilesController'
+const FilesController = require('../controllers/FilesController');
 
 // GET /status
 // When a 'get' request is made to the '/status' route
@@ -39,6 +41,11 @@ router.get('/disconnect', AuthController.getDisconnect);
 // When a 'get' request is made to the '/users/me' route
 // the 'UserController.getMe' func will run to handle the request
 router.get('/users/me', UsersController.getMe);
+
+// Post /files
+// When a 'post' request is made to the '/files' route
+// the 'FilesController.postUpload' func will run to handle the request
+router.post('/files', FilesController.postUpload);
 
 // Export the router instance so it can be used elsewhere
 module.exports = router;

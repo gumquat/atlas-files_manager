@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 //import routes module from index file
-const routes = require('./routes/index');
+const routes = require('./routes');
 
 // JSON parser [middleware]
 app.use(express.json());
@@ -19,4 +19,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-module.exports = app;
+// module.exports = app;

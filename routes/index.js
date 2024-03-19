@@ -21,13 +21,12 @@ router.get('/connect', AuthController.getConnect);
 // This should sign-out the user based on the token
 router.get('/disconnect', AuthController.getDisconnect);
 // This should retrieve the user based on the token used
-// weirdly I think they had a typo and wanted UserController instead of UsersController
 router.get('/users/me', UsersController.getMe);
-// This retrieves the file based on the data provided in the request body
-router.post('/files', FilesController.postUpload);
 // This retrieves a specific file by its ID
 router.get('/files/:id', FilesController.getShow);
 // This retrieves all files
 router.get('/files', FilesController.getIndex);
+// This retrieves the file based on the data provided in the request body
+router.post('/files', FilesController.postUpload);
 
 module.exports = router;

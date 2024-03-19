@@ -2,8 +2,8 @@
 // Controller file
 
 // Import the dbClient and redisClient
-const redisClient = require('../utils/redis_BACKUP');
-const dbClient = require('../utils/db_BACKUP');
+const redisClient = require('../utils/redis');
+const dbClient = require('../utils/db');
 
 const sha1 = require('../node_modules/sha1');
 

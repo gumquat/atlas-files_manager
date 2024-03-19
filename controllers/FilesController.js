@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
-const MongoUtil = require('../utils/MongoUtil');
+const MongoUtil = require('../utils/db');
 const RedisUtil = require('../utils/RedisUtil');
 
 require('dotenv').config();

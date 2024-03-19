@@ -9,7 +9,7 @@ class DBClient {
     const DB_DATABASE = process.env.DB_DATABASE || 'files_manager';
 
     // Connection URL
-    // DO NOT USE THIS PART (unless locally)
+    // DO NOT USE THIS PART (unless working locally)
     const url = `mongodb://${DB_HOST}:${DB_PORT}/${DB_DATABASE}`;
 
     const uri = "mongodb+srv://evannewman:<BigDick911!>@evannewmanchock-cluster.j599tmt.mongodb.net/?retryWrites=true&w=majority&appName=EvanNewmanChock-CLUSTER"

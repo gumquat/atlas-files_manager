@@ -1,17 +1,15 @@
-//import express and create an instance of the express application
+// import express and create an instance of the express application
 const express = require('express');
 const app = express();
-
-//Define a 'Port' variable, defaults to 5000
 const PORT = process.env.PORT || 5000;
 
-//import routes module from index file
+// import routes module from index file
 const routes = require('./routes');
 
 // JSON parser [middleware]
 app.use(express.json());
 // Load all routes
-app.use(routes);
+app.use('/', routes);
 
 // Start the server by listening to the port
 app.listen(PORT, () => {

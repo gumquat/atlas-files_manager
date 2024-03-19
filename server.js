@@ -14,7 +14,6 @@ app.use('/', routes);
 // Start the server by listening to the port
 app.listen(PORT, () => {
   // Callback func that logs a message when server is running
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
-
 // module.exports = app;

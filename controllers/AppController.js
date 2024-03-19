@@ -1,40 +1,30 @@
-// Task 2 - First Api
-// Controller file
+const redisClient = require('../utils/redis_BACKUP');
+const dbClient = require('../utils/db_BACKUP');
 
-// Import the dbClient and redisClient
-const redisClient = require('../utils/redis');
-const dbClient = require('../utils/db');
+class AppController {
+  // GET /status endpoint
+  static async getStatus (req, res) {
+      // Check if Redis is alive
+      const redisAlive = redisClient.isAlive();
+      // Check if MongoDB is alive
+      const dbAlive = dbClient.isAlive();
+      // Send a JSON response with the status of Redis and MongoDB
+      return res.status(200).json({ redisAlive, dbAlive });
+  };
 
-const AppController = {
-  // Get status of Redis and MongoDB
-  getStatus: (request, response) => {
-    // Check if things are alive
-    const redisAlive = redisClient.isAlive();
-    const dbAlive = dbClient.isAlive();
+  // GET /stats endpoint  
+  static async getStats(req, res){
+    // Get the count of users from the 'users' collection
+    const users = await dbClient.nbUsers();
+    // Get the count of files from the 'files' collection
+    const files = await dbClient.nbFiles();
+    // Send a JSON response with the user and file counts
+    return res.status(200).json({ users, files });
+  };
+}
 
-    // Send status as JSON response
-    if (redisAlive && dbAlive) {
-      response.status(200).json({ redis: true, db: true });
-    } else {
-      response.status(500).json({ error: 'Service Not Available' });
-    }
-  },
-
-  // Get statistics of users and files
-  getStats: async (request, response) => {
-    try {
-      // Get number of users from MongoDB
-      const usersCount = await dbClient.nbUsers();
-      // Get number of files from MongoDB
-      const filesCount = await dbClient.nbFiles();
-
-      // Send statistics as JSON response
-      response.status(200).json({ users: usersCount, files: filesCount });
-    } catch (error) {
-      // Send error message if there's an error
-      response.status(500).json({ message: 'Error retrieving statistics' });
-    }
-  },
-};
-
+// module.exports = {
+//   getStatus,
+//   getStats,
+// };
 module.exports = AppController;

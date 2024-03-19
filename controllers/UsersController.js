@@ -2,11 +2,13 @@
 // Controller file
 
 // Import the dbClient and redisClient
-const redisClient = require('../utils/redis');
-const dbClient = require('../utils/db');
+const redisClient = require('../utils/redis_BACKUP');
+const dbClient = require('../utils/db_BACKUP');
+
 const sha1 = require('../node_modules/sha1');
 
 class UsersController {
+  
   static async postNew(req, res) {
     const { email, password } = req.body;
 
@@ -20,7 +22,6 @@ class UsersController {
       return res.status(400).json({ error: 'Missing password' });
     }
 
-    try {
       // Check if email already exists in DB
       const userExists = await dbClient.getUserByEmail(email);
       if (userExists) {
@@ -29,7 +30,6 @@ class UsersController {
 
       // Hash the password using SHA1
       const hashedPassword = sha1(password);
-
       // Create the new user
       const newUser = {
         email,
@@ -41,10 +41,6 @@ class UsersController {
 
       // Return the new user with only the email and the id
       return res.status(201).json({ email: savedUser.email, id: savedUser._id });
-    } catch (error) {
-      console.error('Error creating user:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
   }
 
   static async getMe(req, res) {

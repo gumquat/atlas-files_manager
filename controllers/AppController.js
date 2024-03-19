@@ -5,9 +5,9 @@ class AppController {
   // GET /status endpoint
   static async getStatus (req, res) {
       // Check if Redis is alive
-      const redisAlive = await redisClient.isAlive();
+      const redisAlive = redisClient.isAlive();
       // Check if MongoDB is alive
-      const dbAlive = await dbClient.isAlive();
+      const dbAlive = dbClient.isAlive();
       // Send a JSON response with the status of Redis and MongoDB
       return res.status(200).json({ redisAlive, dbAlive });
   };

@@ -1,5 +1,5 @@
-const RedisUtil = require('../utils/redis.');
-const MongoUtil = require('../utils/db.');
+const RedisUtil = require('../utils/redis');
+const MongoUtil = require('../utils/db');
 
 // GET /status endpoint
 const getStatus = async (req, res) => {

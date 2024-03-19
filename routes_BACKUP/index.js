@@ -3,10 +3,10 @@ const express = require('express');
 const router = express.Router();
 
 // Require controllers
-const AppController = require('../controllers/AppController_BACKUP');
-const UsersController = require('../controllers/UsersController');
-const AuthController = require('../controllers/AuthController');
-const FilesController = require('../controllers/FilesController');
+const AppController = require('../controllers_BACKUP/AppController_BACKUP');
+const UsersController = require('../controllers_BACKUP/UsersController');
+const AuthController = require('../controllers_BACKUP/AuthController');
+const FilesController = require('../controllers_BACKUP/FilesController');
 
 // API Endpoints
 // GET routes

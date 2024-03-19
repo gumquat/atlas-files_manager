@@ -1,5 +1,5 @@
-const redisClient = require('../utils/redis');
-const dbClient = require('../utils/db');
+const redisClient = require('../utils_BACKUP/redis_BACKUP');
+const dbClient = require('../utils_BACKUP/db_BACKUP');
 
 class AppController {
   // GET /status endpoint

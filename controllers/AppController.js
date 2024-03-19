@@ -1,41 +1,30 @@
-const RedisUtil = require('../utils/redis');
-const MongoUtil = require('../utils/db');
+const redisClient = require('../utils/redis');
+const dbClient = require('../utils/db');
 
-// GET /status endpoint
-const getStatus = async (req, res) => {
-  try {
-    // Check if Redis is alive
-    const redisAlive = await RedisUtil.isAlive();
-    // Check if MongoDB is alive
-    const dbAlive = await MongoUtil.isAlive();
-    // Send a JSON response with the status of Redis and MongoDB
-    res.status(200).json({ redis: redisAlive, db: dbAlive });
-  } catch (error) {
-    // Log the error to the console
-    console.error('Error getting status:', error);
-    // Send an Internal Server Error response
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
+class AppController {
+  // GET /status endpoint
+  static async getStatus (req, res) {
+      // Check if Redis is alive
+      const redisAlive = await redisClient.isAlive();
+      // Check if MongoDB is alive
+      const dbAlive = await dbClient.isAlive();
+      // Send a JSON response with the status of Redis and MongoDB
+      return res.status(200).json({ redis: redisAlive, db: dbAlive });
+  };
 
-// GET /stats endpoint
-const getStats = async (req, res) => {
-  try {
+  // GET /stats endpoint  
+  static async getStats(req, res){
     // Get the count of users from the 'users' collection
-    const users = await MongoUtil.countUsers();
+    const users = await dbClient.countUsers();
     // Get the count of files from the 'files' collection
-    const files = await MongoUtil.countFiles();
+    const files = await dbClient.countFiles();
     // Send a JSON response with the user and file counts
-    res.status(200).json({ users, files });
-  } catch (error) {
-    // Log the error to the console
-    console.error('Error getting stats:', error);
-    // Send an Internal Server Error response
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
+    return res.status(200).json({ users, files });
+  };
+}
 
-module.exports = {
-  getStatus,
-  getStats,
-};
+// module.exports = {
+//   getStatus,
+//   getStats,
+// };
+module.exports = AppController;

@@ -2,12 +2,13 @@
 // Controller file
 
 // Import the dbClient and redisClient
-const redisClient = require('redis');
+const redisClient = require('../utils/redis');
 const dbClient = require('../utils/db');
 
 const sha1 = require('../node_modules/sha1');
 
 class UsersController {
+  
   static async postNew(req, res) {
     const { email, password } = req.body;
 
@@ -40,10 +41,6 @@ class UsersController {
 
       // Return the new user with only the email and the id
       return res.status(201).json({ email: savedUser.email, id: savedUser._id });
-    } catch (error) {
-      console.error('Error creating user:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
   }
 
   static async getMe(req, res) {

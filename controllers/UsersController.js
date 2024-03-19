@@ -21,7 +21,6 @@ class UsersController {
       return res.status(400).json({ error: 'Missing password' });
     }
 
-    try {
       // Check if email already exists in DB
       const userExists = await dbClient.getUserByEmail(email);
       if (userExists) {
@@ -30,7 +29,6 @@ class UsersController {
 
       // Hash the password using SHA1
       const hashedPassword = sha1(password);
-
       // Create the new user
       const newUser = {
         email,

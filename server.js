@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 const routes = require('./routes/index');
 
 // JSON parser [middleware]
-app.use(express.json())
+app.use(express.json());
 // Load all routes
 app.use(routes);
 

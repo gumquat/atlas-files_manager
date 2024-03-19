@@ -9,15 +9,15 @@ class AppController {
       // Check if MongoDB is alive
       const dbAlive = await dbClient.isAlive();
       // Send a JSON response with the status of Redis and MongoDB
-      return res.status(200).json({ redis: redisAlive, db: dbAlive });
+      return res.status(200).json({ redis, db });
   };
 
   // GET /stats endpoint  
   static async getStats(req, res){
     // Get the count of users from the 'users' collection
-    const users = await dbClient.countUsers();
+    const users = await dbClient.nbUsers();
     // Get the count of files from the 'files' collection
-    const files = await dbClient.countFiles();
+    const files = await dbClient.nbFiles();
     // Send a JSON response with the user and file counts
     return res.status(200).json({ users, files });
   };

@@ -26,6 +26,8 @@ router.get('/users/me', UsersController.getMe);
 router.get('/files/:id', FilesController.getShow);
 // // retrieve all files
 router.get('/files', FilesController.getIndex);
+// // returns the content of a file by id
+router.get('/files/:id/data', FilesController.getFile);
 
 
     // POST routes
@@ -36,12 +38,12 @@ router.post('/files', FilesController.postUpload);
 // //
 router.post('/files', FilesController.postUpload);
 
+
     // PUT routes
 // // put a file
 router.put('/files/:id/publish', FilesController.putPublish);
 // // remove a file
 router.put('/files/:id/unpublish', FilesController.putUnpublish);
-// // returns the content of a file by id
-router.get('/files/:id/data', FilesController.getFile);
+
 
 module.exports = router;

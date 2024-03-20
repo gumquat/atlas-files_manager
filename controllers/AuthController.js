@@ -5,7 +5,7 @@ const RedisUtil = require('../utils/redis');
 
 // GET /connect endpoint
 const connect = async (req, res) => {
-  const authHeader = req.header.authorization;
+  const authHeader = req.headers.authorization;
   if (!authHeader) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
@@ -14,17 +14,17 @@ const connect = async (req, res) => {
   const credentials = Buffer.from(base64Credentials, 'base64').toString();
   const [email, password] = credentials.split(':');
 
+  const user = await MongoUtil.findUser(email);
+  if (!user || user.password !== sha1(password)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const token = uuidv4();
   try {
-    const user = await MongoUtil.findUser(email);
-    if (!user || user.password !== sha1(password)) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const token = uuidv4();
     await RedisUtil.redisClient.set(`auth_${token}`, user._id.toString(), 'EX', 24 * 60 * 60);
-
     return res.status(200).json({ token });
   } catch (error) {
+    console.error('Error setting token in Redis:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -37,8 +37,13 @@ const disconnect = async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  await RedisUtil.redisClient.del(`auth_${token}`);
-  return res.status(204).end();
+  try {
+    await RedisUtil.redisClient.del(`auth_${token}`);
+    return res.status(204).end();
+  } catch (error) {
+    console.error('Error deleting token in Redis:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 module.exports = {

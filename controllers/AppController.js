@@ -9,7 +9,7 @@ class AppController {
     // Check if MongoDB is alive
     const dbAlive = dbClient.isAlive();
     // Send a JSON response with the status of Redis and MongoDB
-    return res.status(200).json({ 'redis': redisAlive, 'db': dbAlive });
+    return res.status(200).json({ redis: redisAlive, db: dbAlive });
   }
 
   // GET /stats endpoint

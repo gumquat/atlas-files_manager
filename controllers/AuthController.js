@@ -21,13 +21,8 @@ class AuthController {
     }
 
     const token = uuidv4();
-    try {
-      await redisUtil.set(`auth_${token}`, user._id.toString(), 'EX', 24 * 60 * 60);
-      return res.status(200).json({ token });
-    } catch (error) {
-      console.error('Error setting token in Redis:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
+    await redisUtil.set(`auth_${token}`, user._id.toString(), 'EX', 24 * 60 * 60);
+    return res.status(200).json({ token });
   }
 
   static async getDisconnect(req, res) {

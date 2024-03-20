@@ -1,8 +1,8 @@
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
-const MongoUtil = require('../utils/db');
-const RedisUtil = require('../utils/RedisUtil');
+const mongoUtil = require('../utils/db');
+const redisUtil = require('../utils/redisUtil');
 
 require('dotenv').config();
 
@@ -15,7 +15,7 @@ if (!fs.existsSync(FOLDER_PATH)) {
 
 const postFile = async (req, res) => {
   const token = req.headers['x-token'];
-  const userId = await RedisUtil.redisClient.get(`auth_${token}`);
+  const userId = await redisUtil.redisClient.get(`auth_${token}`);
 
   if (!userId) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -35,7 +35,7 @@ const postFile = async (req, res) => {
 
   // Validate parentId if provided
   if (parentId !== 0) {
-    const parent = await MongoUtil.findFileById(parentId);
+    const parent = await mongoUtil.findFileById(parentId);
     if (!parent) {
       return res.status(400).json({ error: `Parent not found` });
     }
@@ -60,7 +60,7 @@ const postFile = async (req, res) => {
     localPath,
   };
 
-  const result = await MongoUtil.createFile(newFile);
+  const result = await mongoUtil.createFile(newFile);
 
   res.status(201).json({
     id: result._id,

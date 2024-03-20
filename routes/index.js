@@ -10,7 +10,8 @@ const AuthController = require('../controllers/AuthController');
 // const FilesController = require('../controllers/FilesController');
 
 // API Endpoints
-// GET routes
+
+    // GET routes //
 // checks the status of redis and db
 router.get('/status', AppController.getStatus);
 // log number of users and files there are
@@ -22,14 +23,14 @@ router.get('/disconnect', AuthController.getDisconnect);
 // retrieve identified user by token
 router.get('/users/me', UsersController.getMe);
 // // retrieve file by ID
-// router.get('/files/:id', FilesController.getShow);
+router.get('/files/:id', FilesController.getShow);
 // // retrieve all files
-// router.get('/files', FilesController.getIndex);
+router.get('/files', FilesController.getIndex);
 
-// POST routes
+    // POST routes
 // create new user
 router.post('/users', UsersController.postNew);
 // // retrieve file by body data
-// router.post('/files', FilesController.postUpload);
+router.post('/files', FilesController.postUpload);
 
 module.exports = router;

@@ -11,7 +11,7 @@ class DBClient {
     // DO NOT USE THIS PART (unless working locally)
     // const url = `mongodb://${DB_HOST}:${DB_PORT}/${DB_DATABASE}`;
 
-    const uri = "mongodb+srv://evannewman:<!!!!!!!!!PASSWORDHERE!!!!!!!>@evannewmanchock-cluster.j599tmt.mongodb.net/?retryWrites=true&w=majority&appName=EvanNewmanChock-CLUSTER"
+    const uri = 'mongodb+srv://evannewman:<!!!!!!!!!PASSWORDHERE!!!!!!!>@evannewmanchock-cluster.j599tmt.mongodb.net/?retryWrites=true&w=majority&appName=EvanNewmanChock-CLUSTER';
     // Create a new MongoClient
     this.client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     this.db = null;

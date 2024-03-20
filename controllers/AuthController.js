@@ -12,7 +12,7 @@ class AuthController {
     }
 
     const base64Credentials = authHeader.split(' ')[1];
-    const credentials = Buffer.from(base64Credentials, 'base64').toString();
+    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [email, password] = credentials.split(':');
 
     const user = await dbUtil.findUser(email);
@@ -21,7 +21,7 @@ class AuthController {
     }
 
     const token = uuidv4();
-    await redisUtil.set(`auth_${token}`, user._id.toString(), 'EX', 24 * 60 * 60);
+    await redisUtil.set(`auth_${token}`, user._id.toString(), 24 * 60 * 60);
     return res.status(200).json({ token });
   }
 
@@ -43,8 +43,4 @@ class AuthController {
   }
 }
 
-// module.exports = {
-//   connect,
-//   disconnect,
-// };
 module.exports = AuthController;

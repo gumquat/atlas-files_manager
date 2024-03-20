@@ -1,8 +1,9 @@
-const MongoUtil = require('../utils/MongoUtil');
-const RedisUtil = require('../utils/RedisUtil');
+import { atob } from 'atob';
+
 const sha1 = require('sha1');
 const { v4: uuidv4 } = require('uuid');
-const atob = require('atob');
+const MongoUtil = require('../utils/db');
+const RedisUtil = require('../utils/redis');
 
 // GET /connect endpoint
 const connect = async (req, res) => {
@@ -21,9 +22,9 @@ const connect = async (req, res) => {
   }
 
   const token = uuidv4();
-  await RedisUtil.redisClient.set(`auth_${token}`, user._id.toString(), EX, 24 * 60 *60);
+  await RedisUtil.redisClient.set(`auth_${token}`, user._id.toString(), EX, 24 * 60 * 60);
 
-  res.status(200).json({ token });
+  return res.status(200).json({ token });
 };
 
 const disconnect = async (req, res) => {
@@ -35,7 +36,7 @@ const disconnect = async (req, res) => {
   }
 
   await RedisUtil.redisClient.del(`auth_${token}`);
-  res.status(204).end();
+  return res.status(204).end();
 };
 
 module.exports = {

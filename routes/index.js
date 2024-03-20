@@ -7,7 +7,7 @@ const AppController = require('../controllers/AppController');
 
 const UsersController = require('../controllers/UsersController');
 const AuthController = require('../controllers/AuthController');
-// const FilesController = require('../controllers/FilesController');
+const FilesController = require('../controllers/FilesController');
 
 // API Endpoints
 
@@ -27,10 +27,21 @@ router.get('/files/:id', FilesController.getShow);
 // // retrieve all files
 router.get('/files', FilesController.getIndex);
 
+
     // POST routes
 // create new user
 router.post('/users', UsersController.postNew);
 // // retrieve file by body data
 router.post('/files', FilesController.postUpload);
+// //
+router.post('/files', FilesController.postUpload);
+
+    // PUT routes
+// // put a file
+router.put('/files/:id/publish', FilesController.putPublish);
+// // remove a file
+router.put('/files/:id/unpublish', FilesController.putUnpublish);
+// // returns the content of a file by id
+router.get('/files/:id/data', FilesController.getFile);
 
 module.exports = router;

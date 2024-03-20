@@ -5,7 +5,7 @@ const router = express.Router();
 // Require controllers
 const AppController = require('../controllers/AppController');
 
-// const UsersController = require('../controllers/UsersController');
+const UsersController = require('../controllers/UsersController');
 // const AuthController = require('../controllers/AuthController');
 // const FilesController = require('../controllers/FilesController');
 

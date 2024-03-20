@@ -22,7 +22,7 @@ class AuthController {
 
     const token = uuidv4();
     try {
-      await redisUtil.redisClient.set(`auth_${token}`, user._id.toString(), 'EX', 24 * 60 * 60);
+      await redisUtil.set(`auth_${token}`, user._id.toString(), 'EX', 24 * 60 * 60);
       return res.status(200).json({ token });
     } catch (error) {
       console.error('Error setting token in Redis:', error);
@@ -32,19 +32,14 @@ class AuthController {
 
   static async getDisconnect(req, res) {
     const token = req.headers['x-token'];
-    const userId = await redisUtil.redisClient.get(`auth_${token}`);
+    const userId = await redisUtil.get(`auth_${token}`);
 
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    try {
-      await redisUtil.redisClient.del(`auth_${token}`);
-      return res.status(204).end();
-    } catch (error) {
-      console.error('Error deleting token in Redis:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
+    await redisUtil.del(`auth_${token}`);
+    return res.status(204);
   }
 }
 

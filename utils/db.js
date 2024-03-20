@@ -64,7 +64,7 @@ class DBClient {
     return filesCount;
   }
 
-  // MISC BELOW
+  // MISC Utility BELOW //
 
   // get user by email
   async getUserByEmail(email) {

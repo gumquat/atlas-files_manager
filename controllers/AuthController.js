@@ -28,9 +28,9 @@ class AuthController {
       console.error('Error setting token in Redis:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-  };
+  }
 
-  static async disconnect(req, res) {
+  static async getDisconnect(req, res) {
     const token = req.headers['x-token'];
     const userId = await redisUtil.redisClient.get(`auth_${token}`);
 

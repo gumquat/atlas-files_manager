@@ -5,10 +5,12 @@ class RedisClient {
     this.client = redis.createClient();
 
     this.client.on('error', (err) => {
-      console.log(`Redis Client Error', ${err}`);
+      console.log(`Redis Client Error: ${err}`);
     });
+    // these are commented out because redis 2.8.0 automatically
+    // attempts to connect to the server upon creation
     // this.client.connect();
-    this.client.connected = true;
+    // this.client.connected = true;
   }
 
   isAlive() {

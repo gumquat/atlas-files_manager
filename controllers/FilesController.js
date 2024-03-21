@@ -2,9 +2,9 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const mongoUtil = require('../utils/db');
-const redisUtil = require('../utils/redisUtil');
+const redisUtil = require('../utils/redis');
 
-require('dotenv').config();
+// require('dotenv').config();
 
 const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
 
@@ -17,41 +17,47 @@ class FilesController {
   static async postUpload(req, res) {
     const token = req.headers['x-token'];
     const userId = await redisUtil.get(`auth_${token}`);
-  
+
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-  
-    const { name, type, parentId = 0, isPublic = false, data } = req.body;
-  
+
+    const {
+      name,
+      type,
+      parentId = 0,
+      isPublic = false,
+      data,
+    } = req.body;
+
     if (!name) {
       return res.status(400).json({ error: 'Missing name' });
     }
-    if (!type || ![`folder`, `file`, `image`].includes(type)) {
-      return res.status(400).json({ error: `Missing of invlid type` });
+    if (!type || !['folder', 'file', 'image'].includes(type)) {
+      return res.status(400).json({ error: 'Missing of invlid type' });
     }
-    if (!data && type !== `folder`) {
-      return res.status(400).json({ error: `Missing data` });
+    if (!data && type !== 'folder') {
+      return res.status(400).json({ error: 'Missing data' });
     }
-  
+
     // Validate parentId if provided
     if (parentId !== 0) {
       const parent = await mongoUtil.findFileById(parentId);
       if (!parent) {
-        return res.status(400).json({ error: `Parent not found` });
+        return res.status(400).json({ error: 'Parent not found' });
       }
-      if (parent.type !== `folder`) {
-        return res.status(400).json({ error: `Parent is not a folder` });
+      if (parent.type !== 'folder') {
+        return res.status(400).json({ error: 'Parent is not a folder' });
       }
     }
-  
+
     let localPath = null;
-    if (type !== `folder`) {
+    if (type !== 'folder') {
       const filename = uuidv4();
       localPath = path.join(FOLDER_PATH, filename);
       fs.writeFileSync(localPath, Buffer.from(data, 'base64'));
     }
-  
+
     const newFile = {
       userId,
       name,
@@ -60,9 +66,9 @@ class FilesController {
       parentId,
       localPath,
     };
-  
+
     const result = await mongoUtil.createFile(newFile);
-  
+
     res.status(201).json({
       id: result._id,
       name: result.name,
@@ -71,8 +77,7 @@ class FilesController {
       parentId: result.parentId,
       localPath: result.localPath,
     });
-  };
+  }
 }
-
 
 module.exports = FilesController;

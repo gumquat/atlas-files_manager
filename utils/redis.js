@@ -1,26 +1,22 @@
-// Task 0 - Redis Utils
-
 const redis = require('redis');
 
 class RedisClient {
   constructor() {
     this.client = redis.createClient();
 
-    // Display any errors in the console
     this.client.on('error', (err) => {
-      console.error(`Redis client error: ${err}`);
+      console.log(`Redis Client Error: ${err}`);
     });
-
-    // Connect to the server
-    this.client.connected = true;
+    // these are commented out because redis 2.8.0 automatically
+    // attempts to connect to the server upon creation
+    // this.client.connect();
+    // this.client.connected = true;
   }
 
-  // Check if the connection is alive
   isAlive() {
     return this.client.connected;
   }
 
-  // Retrieve the value from Redis for the given key
   async get(key) {
     return new Promise((resolve, reject) => {
       this.client.get(key, (err, value) => {
@@ -33,20 +29,20 @@ class RedisClient {
     });
   }
 
-  // Store the value in Redis with expiration
   async set(key, value, duration) {
     return new Promise((resolve, reject) => {
-      this.client.setex(key, duration, value, (err) => {
+      // this.client.setEx(key, duration, value, (err, reply) => {
+      this.client.set(key, value, 'EX', duration, (err) => {
         if (err) {
           reject(err);
         } else {
+          // resolve(reply);
           resolve();
         }
       });
     });
   }
 
-  // Remove the value from Redis for the given key
   async del(key) {
     return new Promise((resolve, reject) => {
       this.client.del(key, (err) => {
@@ -61,5 +57,4 @@ class RedisClient {
 }
 
 const redisClient = new RedisClient();
-
 module.exports = redisClient;

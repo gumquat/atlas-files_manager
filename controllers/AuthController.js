@@ -15,7 +15,7 @@ class AuthController {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [email, password] = credentials.split(':');
 
-    try{
+    try {
       const user = await dbUtil.getUserByEmail(email);
       if (!user || user.password !== sha1(password)) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -24,7 +24,8 @@ class AuthController {
       await redisUtil.set(`auth_${token}`, user._id.toString(), 24 * 60 * 60);
       return res.status(200).json({ token });
     } catch (error) {
-      console.error('getConnect is STILL not working!', error)
+      console.error('getConnect is STILL not working!', error);
+      return res.status(500).json({error: 'ESlinter needs a returns statement here'});
     }
   }
 

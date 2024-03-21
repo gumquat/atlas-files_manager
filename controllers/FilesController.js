@@ -12,7 +12,6 @@ const redisClient = require('../utils/redis');
 class FilesController {
   // POST /files
   static async postUpload(req, res) {
-    // Get the user ID from Redis based on the token
     const token = req.headers['x-token'];
     const userId = await redisClient.get(`auth_${token}`);
     if (!userId) {
@@ -20,10 +19,8 @@ class FilesController {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Extract relevant data from the request body
-    const {
-      name, type, parentId = '0', isPublic = false, data,
-    } = req.body;
+    // get data from request body
+    const { name, type, parentId = '0', isPublic = false, data,} = req.body;
 
     // Validate the request body
     if (!name) {
@@ -39,43 +36,41 @@ class FilesController {
       return res.status(400).json({ error: 'Missing data' });
     }
 
-    // Check if a parent file is specified
-    let parentFile = null;
-    if (parentId !== '0') {
-      parentFile = await dbClient.db.collection('files').findOne({ _id: new ObjectId(parentId) });
-      if (!parentFile) {
-        console.log('Parent not found');
-        return res.status(400).json({ error: 'Parent not found' });
-      }
-      if (parentFile.type !== 'folder') {
-        console.log('Parent is not a folder');
-        return res.status(400).json({ error: 'Parent is not a folder' });
-      }
+  // Check if a parent file is specified and valid
+  let parentFile = null;
+  if (parentId !== '0') {
+    parentFile = await dbClient.db.collection('files').findOne({ _id: new ObjectId(parentId) });
+    if (!parentFile) {
+      return res.status(400).json({ error: 'Parent not found' });
     }
-
-    // Prepare the file data to be saved
-    const fileData = {
-      userId: new ObjectId(userId),
-      name,
-      type,
-      isPublic,
-      parentId: parentId !== '0' ? new ObjectId(parentId) : 0,
-    };
-
-    // If the file type is not a folder, save the file locally
-    if (type !== 'folder') {
-      const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
-      if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath, { recursive: true });
-      }
-      const fileName = uuidv4();
-      const filePath = path.join(folderPath, fileName);
-
-      const fileBuffer = Buffer.from(data, 'base64');
-      fs.writeFileSync(filePath, fileBuffer);
-
-      fileData.localPath = filePath;
+    if (parentFile.type !== 'folder') {
+      return res.status(400).json({ error: 'Parent is not a folder' });
     }
+  }
+
+  // Prepare the file data to be saved
+  const fileData = {
+    userId: new ObjectId(userId),
+    name,
+    type,
+    isPublic,
+    parentId: parentId !== '0' ? new ObjectId(parentId) : 0,
+  };
+
+  // If the file type is not a folder, save the file locally
+  if (type !== 'folder') {
+    const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath, { recursive: true });
+    }
+    const fileName = uuidv4();
+    const filePath = path.join(folderPath, fileName);
+
+    const fileBuffer = Buffer.from(data, 'base64');
+    fs.writeFileSync(filePath, fileBuffer);
+
+    fileData.localPath = filePath;
+  }
 
     // Insert the file data into the database
     const newFile = await dbClient.db.collection('files').insertOne(fileData);

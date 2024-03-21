@@ -43,8 +43,6 @@ class FilesController {
     let parent = null;
     // Validate parentId if provided
     if (parentId !== 0) {
-      // DOUBLE CHECK THIS LINE
-      // parent = await mongoUtil.findFileById(parentId);
       parentFile = await dbClient.db.collection('files').findOne({ _id: new ObjectId(parentId) });
       if (!parent) {
         return res.status(400).json({ error: 'Parent not found' });
@@ -54,33 +52,50 @@ class FilesController {
       }
     }
 
-    let localPath = null;
-    if (type !== 'folder') {
-      const filename = uuidv4();
-      localPath = path.join(FOLDER_PATH, filename);
-      fs.writeFileSync(localPath, Buffer.from(data, 'base64'));
-    }
-
     const newFile = {
-      userId,
+      // double check this line
+      userId: new ObjectiD(userId),
       name,
       type,
       isPublic,
-      parentId,
-      localPath,
+      parentId: parentId !== '0' ? new ObjectId(parentId) : 0,
     };
 
-    const result = await mongoUtil.createFile(newFile);
+    if (type !== 'folder') {
+      const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
+      }
+      const fileName = uuidv4();
+      const filePath = path.join(folderPath, fileName);
 
-    res.status(201).json({
-      id: result._id,
-      name: result.name,
-      type: result.type,
-      isPublic: result.isPublic,
-      parentId: result.parentId,
-      localPath: result.localPath,
+      const fileBuffer = Buffer.from(data, 'base64');
+      fs.writeFileSync(filePath, fileBuffer);
+
+      fileData.localPath = filePath;
+    }
+
+    const result = await dbClient.db.collection('files').insertOne(fileData);
+
+    // Add job to Bull queue for generating thumbnail
+    if (fileData.type === 'image') {
+      console.log('Type of file is an image');
+      fileQueue.add({
+        userId: new ObjectId(userId),
+        fileId: new ObjectId(nresult.insertedId),
+      });
+    }
+
+    // console.log('result is:', result);
+    return res.status(201).json({
+      id: result.insertedId,
+      userId: fileData.userId,
+      name: fileData.name,
+      type: fileData.type,
+      isPublic: fileData.isPublic,
+      parentId: fileData.parentId,
+      ...(type !== 'folder' && { localPath: fileData.localPath }),
     });
-  }
-}
+  }};
 
 module.exports = FilesController;

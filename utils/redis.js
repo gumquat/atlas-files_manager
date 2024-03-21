@@ -18,15 +18,8 @@ class RedisClient {
   }
 
   async get(key) {
-    return new Promise((resolve, reject) => {
-      this.client.get(key, (err, value) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(value);
-        }
-      });
-    });
+    const asyncGet = promisify(this.client.get).bind(this.client);
+    return asyncGet(key);
   }
 
   async set(key, value, duration) {

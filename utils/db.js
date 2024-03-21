@@ -4,7 +4,7 @@ class DBClient {
   constructor() {
     // host, port, and database
     const DB_HOST = process.env.DB_HOST || 'localhost';
-    const DB_PORT = process.env.DB_PORT || 27017;
+    const DB_PORT = process.env.DB_PORT || '27017';
     const DB_DATABASE = process.env.DB_DATABASE || 'files_manager';
 
     // Connection URL
@@ -34,12 +34,7 @@ class DBClient {
 
   async nbUsers() {
     // Get the 'users' collection
-    // const usersCollection = this.client.db().collection('users');
-
     // Count the number of documents in the collection
-    // const usersCount = await usersCollection.countDocuments();
-
-    // return usersCount;
     if (!this.db) {
       console.error('Database connection not established');
       return 0;
@@ -50,12 +45,7 @@ class DBClient {
 
   async nbFiles() {
     // Get the 'files' collection
-    // const filesCollection = this.client.db().collection('files');
-
     // Count the number of documents in the collection
-    // const filesCount = await filesCollection.countDocuments();
-
-    // return filesCount;
     if (!this.db) {
       console.error('Database connection not established');
       return 0;

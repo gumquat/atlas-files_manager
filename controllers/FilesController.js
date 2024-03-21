@@ -34,15 +34,18 @@ class FilesController {
       return res.status(400).json({ error: 'Missing name' });
     }
     if (!type || !['folder', 'file', 'image'].includes(type)) {
-      return res.status(400).json({ error: 'Missing of invlid type' });
+      return res.status(400).json({ error: 'Missing type' });
     }
     if (!data && type !== 'folder') {
       return res.status(400).json({ error: 'Missing data' });
     }
 
+    let parent = null;
     // Validate parentId if provided
     if (parentId !== 0) {
-      const parent = await mongoUtil.findFileById(parentId);
+      // DOUBLE CHECK THIS LINE
+      // parent = await mongoUtil.findFileById(parentId);
+      parentFile = await dbClient.db.collection('files').findOne({ _id: new ObjectId(parentId) });
       if (!parent) {
         return res.status(400).json({ error: 'Parent not found' });
       }

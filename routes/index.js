@@ -22,20 +22,20 @@ router.get('/disconnect', AuthController.getDisconnect);
 // retrieve identified user by token
 router.get('/users/me', UsersController.getMe);
 // // retrieve file by ID
-router.get('/files/:id', FilesController.getShow);
-// // retrieve all files
-router.get('/files', FilesController.getIndex);
-// // get file
-router.get('/files/:id/data', FilesController.getFile)
+// router.get('/files/:id', FilesController.getShow);
+// // // retrieve all files
+// router.get('/files', FilesController.getIndex);
+// // // get file
+// router.get('/files/:id/data', FilesController.getFile)
 
 // POST routes
 // create new user
-router.post('/users', UsersController.postNew);
+// router.post('/users', UsersController.postNew);
 // // retrieve file by body data
 router.post('/files', FilesController.postUpload);
 
 // PUT routes
-router.put('/files/:id/publish', FilesController.putPublish);
-router.put('/files/:id/unpublish', FilesController.putUnpublish);
+// router.put('/files/:id/publish', FilesController.putPublish);
+// router.put('/files/:id/unpublish', FilesController.putUnpublish);
 
 module.exports = router;

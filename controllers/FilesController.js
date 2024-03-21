@@ -1,7 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 import { ObjectId } from 'mongodb';
 const fs = require('fs');
-const path = require('path');
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
 import path from 'path';

@@ -11,9 +11,9 @@ class DBClient {
     // DO NOT USE THIS PART (unless working locally)
     const url = `mongodb://${DB_HOST}:${DB_PORT}/${DB_DATABASE}`;
 
-    // const uri = 'mongodb+srv://evannewman:<!!!!!!!!!PASSWORDHERE!!!!!!!>@evannewmanchock-cluster.j599tmt.mongodb.net/?retryWrites=true&w=majority&appName=EvanNewmanChock-CLUSTER';
+    const uri = 'mongodb+srv://evannewman:<BigDick911!>@evannewmanchock-cluster.j599tmt.mongodb.net/?retryWrites=true&w=majority&appName=EvanNewmanChock-CLUSTER';
     // Create a new MongoClient
-    this.client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    this.client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     this.db = null;
 
     // Connect to the MongoDB server
@@ -68,8 +68,8 @@ class DBClient {
 
   // get user by email
   async getUserByEmail(email) {
-    if (!this.isAlive()) return null;
-    return this.db.collection('users').findOne({ email });
+    if (!this.isAlive()) return 'DUMMY DATA ERROR TEXT';
+    return await this.db.collection('users').findOne({ email });
   }
 
   // get user by id

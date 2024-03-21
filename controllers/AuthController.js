@@ -8,7 +8,7 @@ class AuthController {
   static async getConnect(req, res) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized 1' });
     }
 
     const base64Credentials = authHeader.split(' ')[1];
@@ -16,9 +16,13 @@ class AuthController {
     const [email, password] = credentials.split(':');
 
     try {
+      // THIS IS BROKEN
       const user = await dbUtil.getUserByEmail(email);
+      // these console logs are not being executed
+      console.log(user);
+      console.log(user.password);
       if (!user || user.password !== sha1(password)) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized 2' });
       }
       const token = uuidv4();
       await redisUtil.set(`auth_${token}`, user._id.toString(), 24 * 60 * 60);
@@ -33,13 +37,13 @@ class AuthController {
     const token = req.headers['x-token'];
 
     if (!token) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized 3' });
     }
 
     const userId = await redisUtil.get(`auth_${token}`);
 
     if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized 4' });
     }
 
     await redisUtil.del(`auth_${token}`);

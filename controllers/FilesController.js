@@ -1,8 +1,10 @@
 const { v4: uuidv4 } = require('uuid');
+import { ObjectId } from 'mongodb';
 const fs = require('fs');
 const path = require('path');
-const mongoUtil = require('../utils/db');
-const redisUtil = require('../utils/redis');
+const dbClient = require('../utils/db');
+const redisClient = require('../utils/redis');
+import path from 'path';
 
 // // require('dotenv').config();
 
@@ -16,7 +18,7 @@ const redisUtil = require('../utils/redis');
 class FilesController {
   static async postUpload(req, res) {
     const token = req.headers['x-token'];
-    const userId = await redisUtil.get(`auth_${token}`);
+    const userId = await redisClient.get(`auth_${token}`);
 
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });

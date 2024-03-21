@@ -4,14 +4,14 @@ const path = require('path');
 const mongoUtil = require('../utils/db');
 const redisUtil = require('../utils/redis');
 
-// require('dotenv').config();
+// // require('dotenv').config();
 
-const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
+// const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
 
-// Ensure the storage directory exists
-if (!fs.existsSync(FOLDER_PATH)) {
-  fs.mkdirSync(FOLDER_PATH, { recursive: true });
-}
+// // Ensure the storage directory exists
+// if (!fs.existsSync(FOLDER_PATH)) {
+//   fs.mkdirSync(FOLDER_PATH, { recursive: true });
+// }
 
 class FilesController {
   static async postUpload(req, res) {
@@ -54,13 +54,16 @@ class FilesController {
 
     const newFile = {
       // double check this line
-      userId: new ObjectiD(userId),
+      userId,
       name,
       type,
       isPublic,
       parentId: parentId !== '0' ? new ObjectId(parentId) : 0,
     };
 
+    // ////////////////////////CONSTRUCTION///////////////////////////// //
+
+    //double check this part
     if (type !== 'folder') {
       const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
       if (!fs.existsSync(folderPath)) {
@@ -77,25 +80,22 @@ class FilesController {
 
     const result = await dbClient.db.collection('files').insertOne(fileData);
 
-    // Add job to Bull queue for generating thumbnail
-    if (fileData.type === 'image') {
-      console.log('Type of file is an image');
+    if (type === 'image') {
       fileQueue.add({
-        userId: new ObjectId(userId),
-        fileId: new ObjectId(nresult.insertedId),
+        userId: userId.toString(),
+        fileId: newFile.insertedId.toString(),
       });
     }
 
-    // console.log('result is:', result);
     return res.status(201).json({
       id: result.insertedId,
-      userId: fileData.userId,
-      name: fileData.name,
-      type: fileData.type,
-      isPublic: fileData.isPublic,
-      parentId: fileData.parentId,
-      ...(type !== 'folder' && { localPath: fileData.localPath }),
+      userId: newFile.userId,
+      name: newFile.name,
+      type: newFile.type,
+      isPublic: newFile.isPublic,
+      parentId: newFile.parentId,
+      ...(type !== 'folder' && { localPath: newFile.localPath }),
     });
-  }};
+  }}
 
 module.exports = FilesController;

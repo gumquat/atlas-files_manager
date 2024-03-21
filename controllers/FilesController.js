@@ -16,7 +16,7 @@ if (!fs.existsSync(FOLDER_PATH)) {
 class FilesController {
   static async postUpload(req, res) {
     const token = req.headers['x-token'];
-    const userId = await redisUtil.redisClient.get(`auth_${token}`);
+    const userId = await redisUtil.get(`auth_${token}`);
   
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -73,7 +73,6 @@ class FilesController {
     });
   };
 }
-
 
 
 module.exports = FilesController;

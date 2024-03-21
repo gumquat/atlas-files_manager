@@ -1,20 +1,18 @@
-// import express and create an instance of the express application
+// Task 2 - First API
+
 const express = require('express');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 
-// import routes module from index file
-const routes = require('./routes/index');
+// Load routes from routes/index.js
+const routes = require('./routes');
 
-// JSON parser [middleware]
 app.use(express.json());
-// Load all routes
-app.use(routes);
 
-// Start the server by listening to the port
-app.listen(PORT, () => {
-  // Callback func that logs a message when server is running
-  console.log(`Server listening on port ${PORT}`);
+app.use('/', routes);
+
+// Start server listening on specified port
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
-// module.exports = app;

@@ -1,86 +1,68 @@
+// Task 1 - MongoDB Utils
+
 const { MongoClient, ObjectId } = require('mongodb');
 
 class DBClient {
   constructor() {
-    // host, port, and database
-    const DB_HOST = process.env.DB_HOST || 'localhost';
-    const DB_PORT = process.env.DB_PORT || '27017';
-    const DB_DATABASE = process.env.DB_DATABASE || 'files_manager';
+    // Retrieves MongoDB connection using the variables
+    const host = process.env.DB_HOST || 'localhost';
+    const port = process.env.DB_PORT || '27017';
+    const database = process.env.DB_DATABASE || 'files_manager';
 
-    // Connection URL
-    // DO NOT USE THIS PART (unless working locally)
-    const url = `mongodb://${DB_HOST}:${DB_PORT}/${DB_DATABASE}`;
-
-    const uri = 'mongodb+srv://evannewman:<BigDick911!>@evannewmanchock-cluster.j599tmt.mongodb.net/?retryWrites=true&w=majority&appName=EvanNewmanChock-CLUSTER';
-    // Create a new MongoClient
-    this.client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    // initializes MongoClient with Url
+    this.client = new MongoClient(`mongodb://${host}:${port}`, { useNewUrlParser: true, useUnifiedTopology: true });
+    // set inital connection to null, changes if succsessful
     this.db = null;
 
-    // Connect to the MongoDB server
-    this.client.connect((err) => {
-      if (err) {
-        console.error('Error connecting to MongoDB:', err);
-      } else {
-        console.log('Connected to MongoDB');
-        this.db = this.client.db(DB_DATABASE);
-      }
-    });
+    // connects to MongoDB
+    this.client.connect()
+      .then(() => {
+        // when connected sets this.db
+        this.db = this.client.db(database);
+      })
+      // logs errors
+      .catch((err) => console.error('DB connection err', err));
   }
 
+  // checks if connected
   isAlive() {
-    // Check if the client is connected to MongoDB
-    return this.client.isConnected();
+    // returns true if this.db is not null
+    return !!this.db;
   }
 
+  // counts and returns number of user documents
   async nbUsers() {
-    // Get the 'users' collection
-    // Count the number of documents in the collection
-    if (!this.db) {
-      console.error('Database connection not established');
-      return 0;
-    }
-    const usersCount = await this.db.collection('users').countDocuments();
-    return usersCount;
+    // if not connected, return 0
+    if (!this.isAlive()) return 0;
+    // if connected, return count of user documents
+    return this.db.collection('users').countDocuments();
   }
 
+  // count and return number of file documents
   async nbFiles() {
-    // Get the 'files' collection
-    // Count the number of documents in the collection
-    if (!this.db) {
-      console.error('Database connection not established');
-      return 0;
-    }
-    const filesCount = await this.db.collection('files').countDocuments();
-    return filesCount;
+    // if not connected, return 0
+    if (!this.isAlive()) return 0;
+    // if connected return count of file documents
+    return this.db.collection('files').countDocuments();
   }
 
-  // MISC Utility BELOW //
-  // BROKEN!!!!!!!!!!!!!!!!
-  // get user by email
-  // async getUserByEmail(email) {
-  //   if (!this.isAlive()) return 'DUMMY DATA ERROR TEXT';
-  //   return await this.db.collection('users').findOne({ email });
-  // }
-    // Find the user and return it
-    async getUserByEmail(filter) {
-      try {
-        const user = await this.db.collection('users').findOne(filter);
-        return user;
-      } catch (error) {
-        console.error('Error finding user:', error);
-        throw new Error('Failed to find user in database.');
-      }
-    }
-
-  // get user by id
-  async getUserById(userId) {
+  // Retrieve a user by email
+  async getUserByEmail(email) {
     if (!this.isAlive()) return null;
+    return this.db.collection('users').findOne({ email });
+  }
+
+  // Retrieve a user by _id
+  async getUserById(userId) {
+    if (!this.db) {
+      return null;
+    }
     // Convert the userId string to an ObjectId for MongoDB
     const objectId = new ObjectId(userId);
     return this.db.collection('users').findOne({ _id: objectId });
   }
 
-  // crete new user
+  // Create a new user
   async createUser(user) {
     if (!this.isAlive()) return null;
     const result = await this.db.collection('users').insertOne(user);
@@ -88,6 +70,6 @@ class DBClient {
   }
 }
 
-// Create an instance of DBClient and export it
 const dbClient = new DBClient();
+
 module.exports = dbClient;

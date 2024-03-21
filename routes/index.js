@@ -33,6 +33,6 @@ router.get('/files', FilesController.getIndex);
 // create new user
 router.post('/users', UsersController.postNew);
 // // retrieve file by body data
-// router.post('/files', FilesController.postUpload);
+router.post('/files', FilesController.postUpload);
 
 module.exports = router;

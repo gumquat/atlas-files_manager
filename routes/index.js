@@ -25,11 +25,17 @@ router.get('/users/me', UsersController.getMe);
 router.get('/files/:id', FilesController.getShow);
 // // retrieve all files
 router.get('/files', FilesController.getIndex);
+// // get file
+router.get('/files/:id/data', FilesController.getFile)
 
 // POST routes
 // create new user
 router.post('/users', UsersController.postNew);
 // // retrieve file by body data
 router.post('/files', FilesController.postUpload);
+
+// PUT routes
+router.put('/files/:id/publish', FilesController.putPublish);
+router.put('/files/:id/unpublish', FilesController.putUnpublish);
 
 module.exports = router;

@@ -25,7 +25,7 @@ class AuthController {
       return res.status(200).json({ token });
     } catch (error) {
       console.error('getConnect is STILL not working!', error);
-      return res.status(500).json({error: 'ESlinter needs a returns statement here'});
+      return res.status(500).json({ error: 'ESlinter needs a returns statement here' });
     }
   }
 

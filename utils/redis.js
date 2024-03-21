@@ -30,31 +30,16 @@ class RedisClient {
   }
 
   async set(key, value, duration) {
-    return new Promise((resolve, reject) => {
-      // this.client.setEx(key, duration, value, (err, reply) => {
-      this.client.set(key, value, 'EX', duration, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          // resolve(reply);
-          resolve();
-        }
-      });
-    });
+    const asyncSet = promisify(this.client.setex).bind(this.client);
+    return asyncSet(key, duration, value);
   }
 
   async del(key) {
-    return new Promise((resolve, reject) => {
-      this.client.del(key, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
+    const asyncDel = promisify(this.client.del).bind(this.client);
+    return asyncDel(key);
   }
 }
+
 
 const redisClient = new RedisClient();
 module.exports = redisClient;

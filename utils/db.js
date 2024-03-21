@@ -65,12 +65,22 @@ class DBClient {
   }
 
   // MISC Utility BELOW //
-
+  // BROKEN!!!!!!!!!!!!!!!!
   // get user by email
-  async getUserByEmail(email) {
-    if (!this.isAlive()) return 'DUMMY DATA ERROR TEXT';
-    return await this.db.collection('users').findOne({ email });
-  }
+  // async getUserByEmail(email) {
+  //   if (!this.isAlive()) return 'DUMMY DATA ERROR TEXT';
+  //   return await this.db.collection('users').findOne({ email });
+  // }
+    // Find the user and return it
+    async getUserByEmail(filter) {
+      try {
+        const user = await this.db.collection('users').findOne(filter);
+        return user;
+      } catch (error) {
+        console.error('Error finding user:', error);
+        throw new Error('Failed to find user in database.');
+      }
+    }
 
   // get user by id
   async getUserById(userId) {

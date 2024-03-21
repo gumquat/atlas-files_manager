@@ -24,6 +24,7 @@ class AuthController {
       if (!user || user.password !== sha1(password)) {
         return res.status(401).json({ error: 'Unauthorized 2' });
       }
+
       const token = uuidv4();
       await redisUtil.set(`auth_${token}`, user._id.toString(), 24 * 60 * 60);
       return res.status(200).json({ token });

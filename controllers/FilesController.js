@@ -1,6 +1,3 @@
-// Task 5, 6, and 7 - FilesController.js
-// Task 8 and 9 as well ;)
-
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
@@ -11,6 +8,7 @@ const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
 
 class FilesController {
+  // #5 // postUpload
   // POST /files
   static async postUpload(req, res) {
     // Get the user ID from Redis based on the token
@@ -102,6 +100,7 @@ class FilesController {
     });
   }
 
+  // #6 // getShow
   // GET /files/:id
   static async getShow(req, res) {
     try {
@@ -123,6 +122,7 @@ class FilesController {
     }
   }
 
+  // #6 // getIndex
   // GET /files
   static async getIndex(req, res) {
     try {
@@ -155,6 +155,7 @@ class FilesController {
     }
   }
 
+  // #7 // putPublish
   // PUT /files/:id/publish
   static async putPublish(req, res) {
     try {
@@ -179,6 +180,7 @@ class FilesController {
     }
   }
 
+  // #7 // putUnpublish
   // PUT /files/:id/unpublish
   static async putUnpublish(req, res) {
     try {
@@ -203,6 +205,7 @@ class FilesController {
     }
   }
 
+  // #8 // getFile
   // GET /files/:id/data
   // eslint-disable-next-line consistent-return
   static async getFile(req, res) {
